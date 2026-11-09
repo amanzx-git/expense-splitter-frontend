@@ -1,21 +1,49 @@
-<<<<<<< HEAD
-# expense-splitter-frontend
-A simple, clean app for splitting bills and expenses with friends. Includes a quick browser calculator you can use without an account, plus full group expense tracking and smart debt settlement features.
-=======
-# React + Vite
+---
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+## 🏗️ System Architecture: A Two-Part Ecosystem
 
-Currently, two official plugins are available:
+The application is split into **two completely separate systems** that work in harmony. This separation ensures the app is incredibly fast to use, highly secure, and easy to maintain.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```text
+  ┌──────────────────────────┐               ┌──────────────────────────┐               ┌──────────────────────────┐
+  │      FRONTEND (Client)   │               │     BACKEND (Server)     │               │    DATABASE (Storage)    │
+  │     React 18 + Vite      │  ───JSON───>  │   Django REST Framework  │  ────ORM────> │        PostgreSQL        │
+  │  (Runs in User Browser)  │  <──Session─  │ (Runs on Secured Server) │               │   (Persistent Storage)   │
+  └──────────────────────────┘               └──────────────────────────┘               └──────────────────────────┘
+```
 
-## React Compiler
+### 🎨 Part 1: The Frontend (The Visual Experience)
+*   **What it is:** Built using **React 18** and **Vite**, this is everything the user sees, clicks, and interacts with in their web browser.
+*   **What it handles:** 
+    *   Smooth, instant page navigation and responsive viewports (Mobile, Tablet, Desktop).
+    *   Form collection, real-time input limits, and helpful loading wheels.
+    *   The offline **Quick Split** engine that calculates math in memory instantly without touching a database.
+    *   Generating and displaying secure informational UPI QR codes for easy mobile scanning.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 🛡️ Part 2: The Backend (The Brain & Security)
+*   **What it is:** Powered by **Django REST Framework**, this runs on a secure remote server and guards all data logic.
+*   **What it handles:**
+    *   User accounts, password encryption, secure session logins, and email verification.
+    *   **Strict Security Rules:** The frontend might hide a button to look clean, but the backend double-checks *every single request* to ensure members can never alter frozen logs, self-confirm payments, or peek into private groups.
+    *   **Data Serialization & Locking:** Uses robust database locks to prevent "race conditions" (e.g., two admins clicking split simultaneously).
+    *   **Data Persistence:** Saves all historical details cleanly to a **PostgreSQL database**.
 
-## Expanding the Oxlint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
->>>>>>> 8701fa2 (Initial Commit & Quick Split Feature Created)
+## 🛠️ How to Use and Develop on the Two Parts
+
+The frontend speaks to the backend using **JSON text data** across a secured development proxy network vector.
+
+### 👨‍💻 Developing Locally
+
+When building the project on your local machine, you run both environments side by side:
+
+1.  **Boot the Backend (Port `8000`):** Start the Django server. This launches the data API and mounts your database loops.
+2.  **Boot the Frontend (Port `5173`):** Start the Vite development runner.
+3.  **The Invisible Proxy Bridge:** A built-in connection in the frontend detects requests sent to `/api` or `/media` and forwards them to port `8000`. This eliminates complex cross-origin security errors (`CORS`) and simulates an authentic production environment out of the box.
+
+### 🚀 Deploying to Production
+Because the systems are modular, they can be deployed independently:
+*   The **Frontend** can be hosted on ultra-fast content delivery networks (CDNs like Vercel or Netlify) for near-instant page load times globally.
+*   The **Backend** can live inside an isolated cloud instance (like AWS, Heroku, or DigitalOcean) behind a secure firewall protecting the PostgreSQL database stack.
+
