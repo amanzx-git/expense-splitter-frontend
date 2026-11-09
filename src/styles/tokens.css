@@ -1,0 +1,26 @@
+/* Design tokens: the only place raw colours and sizes are chosen.
+   Accent: deep teal (white text on it is ~5.5:1 contrast, passes WCAG AA). */
+:root {
+  --color-primary: #0f766e;
+  --color-primary-hover: #115e59;
+  --color-on-primary: #ffffff;
+  --color-bg: #f6f8fa;
+  --color-surface: #ffffff;
+  --color-text: #1b2430;
+  --color-muted: #566074;
+  --color-border: #d5dbe3;
+  --color-danger: #b42318;
+  --color-danger-bg: #fdecea;
+  --color-focus: #1d4ed8;
+
+  --radius: 10px;
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2.5rem;
+
+  --max-width: 1100px;
+  --font: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
