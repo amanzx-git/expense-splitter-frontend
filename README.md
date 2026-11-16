@@ -10,6 +10,8 @@
 
 **Recruiter / reviewer?** See the [engineering case study](https://github.com/amanzx-git/expense-splitter-backend/blob/main/docs/PROJECT_CASE_STUDY.md) for the financial algorithms, database consistency, authentication, and system architecture. The [backend API repository](https://github.com/amanzx-git/expense-splitter-backend) documents server setup and tests.
 
+**Explore:** [Engineering case study](https://github.com/amanzx-git/expense-splitter-backend/blob/main/docs/PROJECT_CASE_STUDY.md) · [Production readiness checklist](https://github.com/amanzx-git/expense-splitter-backend/blob/main/docs/DEPLOYMENT_CHECKLIST.md)
+
 ## Features
 
 - **Guest Quick Split:** calculate an equal expense split without signing in; calculations run client-side and remain available even when the backend is unavailable.
