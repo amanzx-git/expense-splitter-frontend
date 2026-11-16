@@ -1,81 +1,69 @@
-# 💸 Expense Splitter
+# Splitter — Frontend
 
-A clean, human-friendly web application designed to make splitting bills, tracking group expenses, and settling up debts completely stress-free. 
+**Splitter** is a React web app for sharing expenses with friends and groups, calculating exact balances, and tracking settlements. Built with **React 19, Vite, and React Router**.
 
-Built with **React 18** and **Vite**, it focuses on fast performance, pixel-perfect responsive design, and high-precision financial math.
+[Backend repository](https://github.com/amanzx-git/expense-splitter-backend) · [MIT License](LICENSE)
 
----
+> **Status:** Active development; deployment is planned. No public production demo URL is claimed here.
 
-## 🌟 Key Features & Why People Benefit
+## Features
 
-### 1. 🛑 Goodbye, Weird Rounding Bugs
-Most splitting apps suffer from floating-point rounding errors (e.g., `0.1 + 0.2` unexpectedly equals `0.30000000000000004`). If you split ₹1000 among 3 people, the totals break. 
-*   **The Benefit:** This app processes all currency transactions strictly in **integer paise** behind the scenes. Any remainder penny is distributed cleanly using a deterministic tie-break system. Your splits balance perfectly down to the single paisa.
+- **Guest Quick Split:** calculate an equal expense split without signing in; calculations run client-side and remain available even when the backend is unavailable.
+- **Accounts:** registration, email verification, login, password reset, and user profile workflows.
+- **Groups:** create groups, invite members, and manage membership.
+- **Expenses:** add, edit, delete, filter, and comment on shared expenses; choose participants for each split.
+- **Balances and settlements:** preview balances, view settlement history, and generate settlements with appropriate permissions.
+- **Payment tracking:** payer reports payment, receiver confirms it; optional UPI link/QR convenience. **Splitter does not move money or independently verify bank transfers.**
+- **Notifications:** unread count and contextual updates for relevant group activity.
+- **Resilient UI:** backend-outage messaging and client-only Quick Split.
 
-### 2. ⚡ Immediate Guest Mode (No Account Needed)
-You are at a restaurant with friends and want to calculate a split instantly without making everyone sign up.
-*   **The Benefit:** Use **Quick Split** right out of the box. It runs entirely in your browser's local state. You get a clean payment blueprint immediately without storing a single byte of private data on a server.
+Money is calculated with **integer paise arithmetic** and deterministic remainder allocation to avoid floating-point rounding differences.
 
-### 3. 🛡️ Safe, Fraud-Proof Settlement Flows
-In generic group sheets, anyone can accidentally erase a record or claim they paid without verification.
-*   **The Benefit:** The app uses a controlled, one-way validation process:
-    *   Only the person who owes money can click **"I have paid"**.
-    *   Only the person receiving the money can click **"Confirm received"**.
-    This ensures nobody can falsely clear their own debts.
-
-### 4. 🔒 Zero Financial Intrusion & Complete Privacy
-Many modern utilities demand access to your bank accounts or card statements.
-*   **The Benefit:** This app **never links to your bank** and does not move real money. It acts strictly as a secure informational ledger. When settling up, it generates an informational UPI QR code visible *only* to the two members involved in that specific transfer.
-
----
-
-## 🏗️ System Architecture: A Two-Part Ecosystem
-
-The application is split into two completely separate systems that work in harmony:
+## How it works
 
 ```text
-  ┌──────────────────────────┐               ┌──────────────────────────┐               ┌──────────────────────────┐
-  │      FRONTEND (Client)   │               │     BACKEND (Server)     │               │    DATABASE (Storage)    │
-  │     React 18 + Vite      │  ───JSON───>  │   Django REST Framework  │  ────ORM────> │        PostgreSQL        │
-  │  (Runs in User Browser)  │  <──Session─  │ (Runs on Secured Server) │               │   (Persistent Storage)   │
-  └──────────────────────────┘               └──────────────────────────┘               └──────────────────────────┘
+React + Vite (browser)
+  |  guest Quick Split: local calculations
+  |
+  +---- REST / session cookies / CSRF ----> Django REST Framework
+                                                |
+                                                v
+                                            PostgreSQL
 ```
 
-*   **🎨 The Frontend (React 18 + Vite):** Handles everything the user sees. It controls smooth, instant page navigation, layout viewports (Mobile, Tablet, Desktop), form collection, and the offline Quick Split calculator math engine.
-*   **🛡️ The Backend (Django REST Framework + PostgreSQL):** Handles the brain and security logic. It guards user accounts, session logins, email verification, database locking (to prevent double-click errors), and data persistence.
+The frontend and backend are separate repositories. The backend handles persistence, permissions, group balances, and official settlements.
 
----
+## Local development
 
-## 🚀 How to Run the Project Locally
+Prerequisites: Node.js and npm. For authenticated/group features, run the [backend](https://github.com/amanzx-git/expense-splitter-backend) as well.
 
-Follow these quick steps to get the front-end application running on your computer:
-
-### 1. Clone the repository and navigate inside
 ```bash
-git clone https://github.com
+git clone https://github.com/amanzx-git/expense-splitter-frontend.git
 cd expense-splitter-frontend
-```
-
-### 2. Install dependencies
-```bash
 npm install
-```
-
-### 3. Set up your environment file
-```bash
-cp .env.example .env
-```
-
-### 4. Start the local development server
-```bash
 npm run dev
 ```
-Now open **`http://localhost:5173`** in your browser to interact with the application!
 
----
+Open the local address printed by Vite (typically `http://localhost:5173`).
 
-## 📄 License
+The repository includes `.env.example`. Copy it to `.env` only if your development setup requires overrides. **Never put private keys or secrets in Vite environment variables:** browser-exposed `VITE_*` values are public.
 
-This project is licensed under the **MIT License**. You may use, copy, modify, distribute, and commercially use the software, provided you retain the original copyright and license notice in copies or substantial portions of the software. The software is provided **as is**, without warranty.
+Useful commands:
 
-Copyright (c) 2026 Aman Yadav. See the [LICENSE](LICENSE) file for the full license terms.
+```bash
+npm run test      # Run Vitest tests
+npm run build     # Create a production build
+npm run preview   # Preview the build locally
+```
+
+## Security and deployment
+
+Session-authenticated requests use the backend's CSRF/session setup. Deployment must configure a trustworthy API origin/proxy, HTTPS, cookie security, and frontend/backend origin settings. No production infrastructure or CI/CD deployment is claimed until it is implemented and verified.
+
+## Repository naming
+
+The public product is **Splitter**. The repository name `expense-splitter-frontend` is retained intentionally; this is a branding change, not a change to API contracts.
+
+## License
+
+MIT License — © 2026 Aman Yadav. See [LICENSE](LICENSE).
