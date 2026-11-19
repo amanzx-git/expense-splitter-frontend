@@ -1,0 +1,11 @@
+import { api } from './client.js';
+const base = '/messages/conversations/';
+export const getConversations = (page = 1, signal) => api.get(`${base}?page=${page}`, { signal });
+export const getConversation = (id, signal) => api.get(`${base}${id}/`, { signal });
+export const getRecipient = (id, signal) => api.get(`/messages/recipients/${id}/`, { signal });
+export const getMessages = (id, cursor, signal) => api.get(`${base}${id}/messages/${cursor ? `?cursor=${encodeURIComponent(cursor)}` : ''}`, { signal });
+export const startConversation = (recipientId, body, key) => api.post(base, { recipient_id: recipientId, body, client_request_id: key });
+export const sendMessage = (id, body, key) => api.post(`${base}${id}/messages/`, { body, client_request_id: key });
+export const markConversationRead = (id, through) => api.post(`${base}${id}/read/`, { through_message_id: through });
+export const getMessageCount = (signal) => api.get('/messages/unread-count/', { signal });
+export const messageCursor = (url) => url ? new URL(url, 'http://localhost').searchParams.get('cursor') : null;

@@ -1,3 +1,4 @@
+import { countLabel } from '../../utils/wording.js';
 import { useState } from 'react';
 import Button from '../../components/Button.jsx';
 import Input from '../../components/Input.jsx';
@@ -27,8 +28,8 @@ function RemovalConsequences({ name, personId, deleted, changed }) {
       )}
       {changed.length > 0 && (
         <div>
-          <p><strong>Will lose {name} from the split ({changed.length}):</strong></p>
-          <ul aria-label={`Expenses that will lose ${name} from the split`}>
+          <p><strong>{name} will be removed from these splits ({changed.length}):</strong></p>
+          <ul aria-label={`Expenses whose splits will change for ${name}`}>
             {changed.map((e) => <li key={e.id}>{e.description}</li>)}
           </ul>
         </div>
@@ -37,8 +38,10 @@ function RemovalConsequences({ name, personId, deleted, changed }) {
   );
 }
 
-export default function ParticipantEditor({ participants, expenses, onAdd, onRename, onRemove, askConfirm }) {
-  const [newName, setNewName] = useState('');
+export default function ParticipantEditor({ participants, expenses, onAdd, onRename, onRemove, askConfirm, nameDraft, onNameDraft }) {
+  const [localName, setLocalName] = useState('');
+  const newName = nameDraft ?? localName;
+  const setNewName = onNameDraft ?? setLocalName;
   const [addError, setAddError] = useState('');
   const [editingId, setEditingId] = useState(null);
   const [editName, setEditName] = useState('');
@@ -80,7 +83,7 @@ export default function ParticipantEditor({ participants, expenses, onAdd, onRen
     }
     askConfirm({
       title: `Remove ${p.name}?`,
-      message: `${p.name} appears in ${deleted.length + changed.length} expense(s). Nothing changes until you confirm.`,
+      message: `Removing ${p.name} will affect ${countLabel(deleted.length + changed.length, 'expense')}. Review the changes below.`,
       details: <RemovalConsequences name={p.name} personId={p.id} deleted={deleted} changed={changed} />,
       confirmLabel: 'Remove',
       onConfirm: () => onRemove(p.id),
@@ -89,7 +92,7 @@ export default function ParticipantEditor({ participants, expenses, onAdd, onRen
 
   return (
     <div className="stack">
-      <form onSubmit={handleAdd} className="stack" noValidate>
+      <form onSubmit={handleAdd} className="participant-add" noValidate>
         <Input
           label="Person name"
           hint={`Add 2 to ${MAX_PARTICIPANTS} people. Names must be unique.`}
@@ -104,7 +107,7 @@ export default function ParticipantEditor({ participants, expenses, onAdd, onRen
       {participants.length === 0 ? (
         <p className="muted">No people yet.</p>
       ) : (
-        <ul className="plain-list" aria-label="People">
+        <ul className="plain-list participant-list" aria-label="People">
           {participants.map((p) => (
             <li key={p.id} className="list-item">
               {editingId === p.id ? (

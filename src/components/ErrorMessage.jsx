@@ -5,7 +5,6 @@ import Button from './Button.jsx';
 export default function ErrorMessage({ message, onRetry }) {
   return (
     <div className="error-box" role="alert">
-      <p><strong>Something went wrong.</strong></p>
       <p>{message}</p>
       {onRetry && <Button variant="secondary" onClick={onRetry}>Try again</Button>}
     </div>
